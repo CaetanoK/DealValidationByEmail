@@ -1,399 +1,555 @@
 {
-    "meta": {
-      "templateCredsSetupCompleted": true,
-      "instanceId": "2b30303a47483f93063d4c11f42fa5c955a8d12b2582cbea7ac4195834a5a4cd"
-    },
-    "nodes": [
-      {
-        "parameters": {
-          "operation": "get",
-          "dealId": "={{ $json.body.meta.id }}"
-        },
-        "id": "5f724196-0979-4047-835f-fd8de805b53e",
-        "name": "Pipedrive",
-        "type": "n8n-nodes-base.pipedrive",
-        "typeVersion": 1,
-        "position": [
-          1120,
-          380
-        ],
-        "credentials": {
-          "pipedriveApi": {
-            "id": "gYcecRh8icidqdjH",
-            "name": "Pipedrive account"
-          }
+  "meta": {
+    "instanceId": "e4dc8a135763f83bcee3d999344fb45c143b95b4f2020a62c7710632d7841925"
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "get",
+        "dealId": "={{ $json.body.meta.id }}"
+      },
+      "id": "da736c53-aada-4b9f-8577-5823dca7867a",
+      "name": "Pipedrive",
+      "type": "n8n-nodes-base.pipedrive",
+      "typeVersion": 1,
+      "position": [
+        940,
+        420
+      ],
+      "credentials": {
+        "pipedriveApi": {
+          "id": "uCcSqbcm8G0vEzzd",
+          "name": "Pipedrive account"
         }
-      },
-      {
-        "parameters": {
-          "mode": "combine",
-          "combinationMode": "mergeByPosition",
-          "options": {
-            "clashHandling": {
-              "values": {
-                "resolveClash": "addSuffix"
-              }
-            }
-          }
-        },
-        "id": "9fcc1650-37ee-4b23-a176-c5ce73a50c41",
-        "name": "Unir os dados",
-        "type": "n8n-nodes-base.merge",
-        "typeVersion": 2.1,
-        "position": [
-          2300,
-          400
-        ]
-      },
-      {
-        "parameters": {
-          "conditions": {
-            "options": {
-              "caseSensitive": true,
-              "leftValue": "",
-              "typeValidation": "strict"
-            },
-            "conditions": [
-              {
-                "id": "7314503b-f553-4b81-bb1e-73e9b306a8a3",
-                "leftValue": "={{ $json.SMPTstatus_2 }}",
-                "rightValue": "=valid",
-                "operator": {
-                  "type": "string",
-                  "operation": "notEquals"
-                }
-              },
-              {
-                "id": "b8a1bf97-a69d-4ee5-ac7a-c0e83e50a616",
-                "leftValue": "={{ $json.stage_id_1 }}",
-                "rightValue": 196,
-                "operator": {
-                  "type": "number",
-                  "operation": "equals"
-                }
-              }
-            ],
-            "combinator": "and"
-          },
-          "options": {}
-        },
-        "id": "f3456fd3-966c-4fbd-876e-f1bd87734ec6",
-        "name": "Se email for invalido e estiver em 'Lead in' for verdadeiro",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2,
-        "position": [
-          2480,
-          400
-        ]
-      },
-      {
-        "parameters": {
-          "operation": "update",
-          "dealId": "={{ $json.id_1 }}",
-          "updateFields": {
-            "lost_reason": "Invalid Email",
-            "status": "lost"
-          }
-        },
-        "id": "2fd329f9-3bbb-4b02-a023-c913a8adfeee",
-        "name": "Dar Lost",
-        "type": "n8n-nodes-base.pipedrive",
-        "typeVersion": 1,
-        "position": [
-          2660,
-          380
-        ],
-        "credentials": {
-          "pipedriveApi": {
-            "id": "gYcecRh8icidqdjH",
-            "name": "Pipedrive account"
-          }
-        },
-        "onError": "continueRegularOutput"
-      },
-      {
-        "parameters": {
-          "method": "POST",
-          "url": "https://api.snov.io/v1/add-emails-to-verification",
-          "authentication": "genericCredentialType",
-          "genericAuthType": "oAuth2Api",
-          "sendQuery": true,
-          "queryParameters": {
-            "parameters": [
-              {
-                "name": "emails",
-                "value": "={{ [$json.person_id.email[0].value] }}"
-              },
-              {
-                "name": "Status"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "id": "7f84c684-49bb-44ed-9a09-031f856d0d94",
-        "name": "Verificando email",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.2,
-        "position": [
-          1140,
-          780
-        ],
-        "credentials": {
-          "oAuth2Api": {
-            "id": "fcglHZRzlSEeYmeX",
-            "name": "Snovio Credential"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "method": "POST",
-          "url": "https://api.snov.io/v1/get-emails-verification-status",
-          "authentication": "genericCredentialType",
-          "genericAuthType": "oAuth2Api",
-          "sendQuery": true,
-          "queryParameters": {
-            "parameters": [
-              {
-                "name": "emails",
-                "value": "={{ [$json.Email] }}"
-              }
-            ]
-          },
-          "options": {}
-        },
-        "id": "cb8d93a6-21fb-4ebf-ab4b-0946b084fc40",
-        "name": "Validação de email",
-        "type": "n8n-nodes-base.httpRequest",
-        "typeVersion": 4.2,
-        "position": [
-          1680,
-          780
-        ],
-        "credentials": {
-          "oAuth2Api": {
-            "id": "fcglHZRzlSEeYmeX",
-            "name": "Snovio Credential"
-          }
-        }
-      },
-      {
-        "parameters": {
-          "mode": "raw",
-          "jsonOutput": "={ Email: \"{{ \n$json.keys()[1]\n}}\",\n\ndescription: \"{{ \n$json.values()[1].status.identifier\n}}\",\n\nSMPTstatus: \"{{ \n$json.values()[1].values()[0].values()[1]\n}}\"\n}",
-          "options": {}
-        },
-        "id": "02af904c-e964-4c53-9260-cdd527f1667f",
-        "name": "Variavel EmailValido",
-        "type": "n8n-nodes-base.set",
-        "typeVersion": 3.3,
-        "position": [
-          1860,
-          780
-        ]
-      },
-      {
-        "parameters": {
-          "mode": "raw",
-          "jsonOutput": "={\n  \"Email\": \"{{ \n$json.keys()[1]\n}}\"\n}",
-          "options": {}
-        },
-        "id": "159b8d98-a2af-46c7-b2d7-b491493a1e91",
-        "name": "Variavel Email",
-        "type": "n8n-nodes-base.set",
-        "typeVersion": 3.3,
-        "position": [
-          1340,
-          780
-        ]
-      },
-      {
-        "parameters": {
-          "conditions": {
-            "options": {
-              "caseSensitive": true,
-              "leftValue": "",
-              "typeValidation": "strict"
-            },
-            "conditions": [
-              {
-                "id": "7314503b-f553-4b81-bb1e-73e9b306a8a3",
-                "leftValue": "={{ $json.description }}",
-                "rightValue": "=in_progress",
-                "operator": {
-                  "type": "string",
-                  "operation": "equals"
-                }
-              }
-            ],
-            "combinator": "and"
-          },
-          "options": {}
-        },
-        "id": "b8dca981-d5a0-44f5-a397-1225fec749f6",
-        "name": "Retorna se estiver em progresso",
-        "type": "n8n-nodes-base.if",
-        "typeVersion": 2,
-        "position": [
-          2060,
-          780
-        ]
-      },
-      {
-        "parameters": {
-          "amount": 1
-        },
-        "id": "53b06128-5112-4205-a972-a713ce1dceec",
-        "name": "Espera 1 segundo",
-        "type": "n8n-nodes-base.wait",
-        "typeVersion": 1.1,
-        "position": [
-          1520,
-          780
-        ],
-        "webhookId": "9192b793-0170-4ca3-b9c6-1bb1eb1ceb0d"
-      },
-      {
-        "parameters": {
-          "httpMethod": "POST",
-          "path": "deals",
-          "options": {}
-        },
-        "id": "8583efcb-11cc-4dbe-871a-783adb009915",
-        "name": "Webhook",
-        "type": "n8n-nodes-base.webhook",
-        "typeVersion": 2,
-        "position": [
-          840,
-          380
-        ],
-        "webhookId": "c08a7ed3-cf15-46fd-8a67-a652cfbb0d04"
       }
-    ],
-    "connections": {
-      "Pipedrive": {
-        "main": [
-          [
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "mergeByPosition",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "addSuffix"
+            }
+          }
+        }
+      },
+      "id": "4df53a93-acd4-49d5-adae-383c1de2184d",
+      "name": "Unir os dados",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        2120,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
             {
-              "node": "Unir os dados",
-              "type": "main",
-              "index": 0
+              "id": "7314503b-f553-4b81-bb1e-73e9b306a8a3",
+              "leftValue": "={{ $json.SMPTstatus_2 }}",
+              "rightValue": "=not_valid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
             },
             {
-              "node": "Verificando email",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Unir os dados": {
-        "main": [
-          [
-            {
-              "node": "Se email for invalido e estiver em 'Lead in' for verdadeiro",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Se email for invalido e estiver em 'Lead in' for verdadeiro": {
-        "main": [
-          [
-            {
-              "node": "Dar Lost",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Verificando email": {
-        "main": [
-          [
-            {
-              "node": "Variavel Email",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Validação de email": {
-        "main": [
-          [
-            {
-              "node": "Variavel EmailValido",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Variavel EmailValido": {
-        "main": [
-          [
-            {
-              "node": "Retorna se estiver em progresso",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Variavel Email": {
-        "main": [
-          [
-            {
-              "node": "Espera 1 segundo",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
-      },
-      "Retorna se estiver em progresso": {
-        "main": [
-          [
-            {
-              "node": "Espera 1 segundo",
-              "type": "main",
-              "index": 0
+              "id": "13b66de7-6316-418f-933b-76759646d5d3",
+              "leftValue": "={{ $json.stage_id_1 }}",
+              "rightValue": 196,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
             }
           ],
-          [
-            {
-              "node": "Unir os dados",
-              "type": "main",
-              "index": 1
-            }
-          ]
-        ]
+          "combinator": "and"
+        },
+        "options": {}
       },
-      "Espera 1 segundo": {
-        "main": [
-          [
-            {
-              "node": "Validação de email",
-              "type": "main",
-              "index": 0
-            }
-          ]
-        ]
+      "id": "6336b7d0-d0b9-4855-820d-8ed85dbde747",
+      "name": "Se email for invalido e estiver em 'Lead in' for verdadeiro",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2300,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dealId": "={{ $json.id_1 }}",
+        "updateFields": {
+          "lost_reason": "Invalid Email",
+          "status": "lost"
+        }
       },
-      "Webhook": {
-        "main": [
-          [
+      "id": "7f2764b3-b15b-49df-b785-94da1ca81030",
+      "name": "Dar Lost",
+      "type": "n8n-nodes-base.pipedrive",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        420
+      ],
+      "credentials": {
+        "pipedriveApi": {
+          "id": "uCcSqbcm8G0vEzzd",
+          "name": "Pipedrive account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1AtXoiYLwqOfyrJ5Gb8mphtbRMbBavNExLBBOxNN_Sxo",
+          "mode": "list",
+          "cachedResultName": "n8n-lesson",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AtXoiYLwqOfyrJ5Gb8mphtbRMbBavNExLBBOxNN_Sxo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1965529474,
+          "mode": "list",
+          "cachedResultName": "pipedrive",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AtXoiYLwqOfyrJ5Gb8mphtbRMbBavNExLBBOxNN_Sxo/edit#gid=1965529474"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "dealID": "={{ $json.id }}",
+            "Title": "={{ $json.title }}",
+            "Stage_Id": "={{ $json.stage_id }}",
+            "Owner": "={{ $json.owner_name }}",
+            "Email": "={{ $json.Email }}",
+            "Email is Valid?": "={{ $json.SMPTstatus }}",
+            "Deal Status": "={{ $json.status }}"
+          },
+          "matchingColumns": [
+            "dealID"
+          ],
+          "schema": [
             {
-              "node": "Pipedrive",
-              "type": "main",
-              "index": 0
+              "id": "dealID",
+              "displayName": "dealID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Stage_Id",
+              "displayName": "Stage_Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Owner",
+              "displayName": "Owner",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email is Valid?",
+              "displayName": "Email is Valid?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Deal Status",
+              "displayName": "Deal Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
             }
           ]
-        ]
+        },
+        "options": {}
+      },
+      "id": "df7f2b97-3f7a-4889-95be-a8e1a07ee65b",
+      "name": "Planilha de verificação",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.3,
+      "position": [
+        2940,
+        700
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0NZN9YpZ2ubVEnHU",
+          "name": "Google Sheets account"
+        }
       }
     },
-    "pinData": {}
-  }
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.snov.io/v1/add-emails-to-verification",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "emails",
+              "value": "={{ [$json.person_id.email[0].value] }}"
+            },
+            {
+              "name": "Status"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0563f6a3-eb20-484a-87e1-95abe3334d88",
+      "name": "Verificando email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        820
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "HYdKHYIRAVZR3GYO",
+          "name": "Snovio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.snov.io/v1/get-emails-verification-status",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "emails",
+              "value": "={{ [$json.Email] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6b44ffa0-1592-4467-9893-b820252a99db",
+      "name": "Validação de email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1500,
+        820
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "HYdKHYIRAVZR3GYO",
+          "name": "Snovio"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={ Email: \"{{ \n$json.keys()[1]\n}}\",\n\ndescription: \"{{ \n$json.values()[1].status.identifier\n}}\",\n\nSMPTstatus: \"{{ \n$json.values()[1].values()[0].values()[1]\n}}\"\n}",
+        "options": {}
+      },
+      "id": "6e1c3626-da8b-4c72-858e-e38deeaaa2c6",
+      "name": "Variavel EmailValido",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        1680,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"Email\": \"{{ \n$json.keys()[1]\n}}\"\n}",
+        "options": {}
+      },
+      "id": "8e75c655-b4ef-491f-aa6c-e9a4f75a016e",
+      "name": "Variavel Email",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.3,
+      "position": [
+        1160,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "7314503b-f553-4b81-bb1e-73e9b306a8a3",
+              "leftValue": "={{ $json.description }}",
+              "rightValue": "=in_progress",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "545e6607-ae3c-471a-845a-4d5b646835c4",
+      "name": "Retorna se estiver em progresso",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1880,
+        820
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "id": "718448ee-1c62-42f2-b768-961df6ff7b75",
+      "name": "Espera 1 segundo",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1340,
+        820
+      ],
+      "webhookId": "9192b793-0170-4ca3-b9c6-1bb1eb1ceb0d"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combinationMode": "multiplex",
+        "options": {}
+      },
+      "id": "e0117edc-d4cd-4235-83b2-135d8c4e2589",
+      "name": "Verificação do código",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        2700,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "deals",
+        "options": {}
+      },
+      "id": "82b9a1de-e20a-4d04-aa20-ab5e4d87dcb0",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        660,
+        420
+      ],
+      "webhookId": "c08a7ed3-cf15-46fd-8a67-a652cfbb0d04"
+    }
+  ],
+  "connections": {
+    "Pipedrive": {
+      "main": [
+        [
+          {
+            "node": "Unir os dados",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Verificando email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unir os dados": {
+      "main": [
+        [
+          {
+            "node": "Se email for invalido e estiver em 'Lead in' for verdadeiro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Se email for invalido e estiver em 'Lead in' for verdadeiro": {
+      "main": [
+        [
+          {
+            "node": "Dar Lost",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dar Lost": {
+      "main": [
+        [
+          {
+            "node": "Verificação do código",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificando email": {
+      "main": [
+        [
+          {
+            "node": "Variavel Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validação de email": {
+      "main": [
+        [
+          {
+            "node": "Variavel EmailValido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Variavel EmailValido": {
+      "main": [
+        [
+          {
+            "node": "Retorna se estiver em progresso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Variavel Email": {
+      "main": [
+        [
+          {
+            "node": "Espera 1 segundo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retorna se estiver em progresso": {
+      "main": [
+        [
+          {
+            "node": "Espera 1 segundo",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Unir os dados",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Verificação do código",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Espera 1 segundo": {
+      "main": [
+        [
+          {
+            "node": "Validação de email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificação do código": {
+      "main": [
+        [
+          {
+            "node": "Planilha de verificação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Pipedrive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {}
+}
