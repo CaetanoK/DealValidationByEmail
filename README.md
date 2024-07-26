@@ -1,5 +1,8 @@
 # Email Validation and Deal Update Workflow in N8N
 
+![image](https://github.com/user-attachments/assets/8a9d1b47-341e-4f4e-844f-0eae486acabb)
+
+
 This repository contains a workflow for N8N that automates email validation, updates deals in Pipedrive, and logs data in a Google Sheets spreadsheet. The workflow consists of multiple connected steps to perform the following tasks:
 
 1. **Receive Deal Data:**
